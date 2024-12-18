@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DefinitionFinder.com</title>
+  <style>
+    /* Global Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #141414;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      background-color: #1d1d1d;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 8px 15px rgba(0, 0, 0, 0.6);
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+    }
+    h1 {
+      color: #e600ff;
+      font-size: 36px;
+      margin-bottom: 10px;
+      text-shadow: 0 0 10px rgba(230, 0, 255, 0.8);
+    }
+    h2 {
+      color: #888;
+      font-size: 18px;
+      margin-top: 0;
+    }
+    input {
+      padding: 15px;
+      width: 80%;
+      font-size: 18px;
+      border: 2px solid #444;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      background-color: #2a2a2a;
+      color: #fff;
+      outline: none;
+      transition: all 0.3s ease;
+    }
+    input:focus {
+      border-color: #ff0077;
+      box-shadow: 0 0 10px rgba(255, 0, 119, 0.7);
+    }
+    button {
+      padding: 12px 25px;
+      font-size: 18px;
+      background-color: #ff0077;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      width: 80%;
+      margin-top: 10px;
+      transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+    button:hover {
+      background-color: #e600ff;
+      transform: scale(1.05);
+    }
+    .definition {
+      margin-top: 30px;
+      text-align: left;
+      font-size: 18px;
+      color: #d0d0d0;
+      background-color: #252525;
+      padding: 20px;
+      border-radius: 10px;
+      border-left: 5px solid #ff0077;
+      max-height: 300px;
+      overflow-y: auto;
+      box-shadow: 0 0 10px rgba(255, 0, 119, 0.3);
+    }
+    .error {
+      color: #e600ff;
+      font-size: 18px;
+      margin-top: 20px;
+    }
+    a {
+      color: #ff0077;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+    }
+    a:hover {
+      text-decoration: underline;
+      color: #e600ff;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>DefinitionFinder.com</h1>
+    <h2>AI-powered dictionary tool</h2>
+    <input type="text" id="wordInput" placeholder="Enter a word..." />
+    <button onclick="getDefinition()">Get Definition</button>
+    <div id="result" class="definition"></div>
+  </div>
+
+  <script>
+    // Function to fetch definition from a free dictionary API
+    function getDefinition() {
+      const word = document.getElementById('wordInput').value.trim();
+      const resultDiv = document.getElementById('result');
+      
+      if (word === "") {
+        resultDiv.innerHTML = '<span class="error">Please enter a word!</span>';
+        return;
+      }
+      
+      // Corrected URL for fetching the word definition
+      const apiUrl = `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`;
+
+      fetch(apiUrl)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Word not found');
+          }
+          return response.json();
+        })
+        .then(data => {
+          const definition = data[0].meanings[0].definitions[0].definition;
+          resultDiv.innerHTML = `
+            <strong>Definition:</strong><br>${definition}<br><br>
+            <strong>For more details, visit:</strong> <a href="https://www.merriam-webster.com/dictionary/${word}" target="_blank">Merriam-Webster</a>
+          `;
+        })
+        .catch(error => {
+          resultDiv.innerHTML = `<span class="error">Sorry, we couldn't find the word. Please try again.</span>`;
+        });
+    }
+  </script>
+</body>
+</html>
